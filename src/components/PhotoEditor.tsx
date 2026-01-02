@@ -99,11 +99,13 @@ export const PhotoEditor: React.FC<PhotoEditorProps> = ({
       const targetYFromCenter = (ovalCenterY - 0.5) * cropStyle.height;
       
       // Offset needed: target - current
+      // NOTE: our CSS transform applies scale after translate, so translate values get scaled too.
+      // To keep alignment accurate, convert desired on-screen pixel offset to pre-scale translate.
       const offsetX = targetX - faceCenterXInDisplay;
       const offsetY = targetYFromCenter - faceCenterYInDisplay;
-      
+
       setScale(newScale);
-      setPosition({ x: offsetX, y: offsetY });
+      setPosition({ x: offsetX / newScale, y: offsetY / newScale });
       toast.success('Face detected and aligned to standards');
     } else {
       toast.error('No face detected. Please position manually.');
